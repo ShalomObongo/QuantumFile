@@ -1,0 +1,38 @@
+:root {
+  /* Light Theme Variables */
+  --light-background: #f5f5f5;
+  --light-paper: #ffffff;
+  --light-primary: #2196f3;
+  --light-secondary: #1565c0;
+  --light-text-primary: rgba(0, 0, 0, 0.87);
+  --light-text-secondary: rgba(0, 0, 0, 0.6);
+  --light-divider: rgba(0, 0, 0, 0.12);
+
+  /* Dark Theme Variables */
+  --dark-background: #121212;
+  --dark-paper: #1e1e1e;
+  --dark-primary: #90caf9;
+  --dark-secondary: #64b5f6;
+  --dark-text-primary: rgba(255, 255, 255, 0.87);
+  --dark-text-secondary: rgba(255, 255, 255, 0.6);
+  --dark-divider: rgba(255, 255, 255, 0.12);
+
+  /* Default to light theme */
+  --background: var(--light-background);
+  --paper: var(--light-paper);
+  --primary: var(--light-primary);
+  --secondary: var(--light-secondary);
+  --text-primary: var(--light-text-primary);
+  --text-secondary: var(--light-text-secondary);
+  --divider: var(--light-divider);
+}
+
+[data-theme='dark'] {
+  --background: var(--dark-background);
+  --paper: var(--dark-paper);
+  --primary: var(--dark-primary);
+  --secondary: var(--dark-secondary);
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+  --divider: var(--dark-divider);
+} 
