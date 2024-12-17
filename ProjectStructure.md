@@ -1,5 +1,6 @@
 ## Project Structure
 
+```
 quantumfile/
 ├── src/
 │   ├── main/
@@ -40,3 +41,4 @@ quantumfile/
 ├── tsconfig.json                # TypeScript configuration
 ├── electron-builder.json        # Configuration for building and packaging the app
 └── README.md                    # Project documentation
+```
