@@ -19,6 +19,14 @@ declare global {
       restoreBackup: (backupPath: string) => Promise<any>;
       saveApiKey: (apiKey: string) => Promise<any>;
       getApiKey: () => Promise<any>;
+      readFile: (filePath: string) => Promise<{
+        data: ArrayBuffer;
+        text: string | null;
+      }>;
+      extractText: (params: { 
+        data: number[]; 
+        type: string 
+      }) => Promise<{ text: string | null }>;
     };
   }
 }

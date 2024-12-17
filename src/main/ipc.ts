@@ -1,6 +1,8 @@
 import { ipcMain, dialog, BrowserWindow } from 'electron';
 import * as path from 'path';
 import { FileManager } from './fileManager';
+import * as fs from 'fs';
+import mammoth from 'mammoth';
 
 const Store = require('electron-store');
 
@@ -104,6 +106,40 @@ export async function setupIpcHandlers(mainWindow: BrowserWindow) {
       return store.get('geminiApiKey', null);
     } catch (error) {
       console.error('Error getting API key:', error);
+      throw error;
+    }
+  });
+
+  // Add to existing IPC handlers
+  ipcMain.handle('read-file', async (_event, filePath: string) => {
+    try {
+      const buffer = await fs.promises.readFile(filePath);
+      const isText = filePath.match(/\.(txt|md|js|ts|html|css|json|xml)$/i);
+      
+      return {
+        data: buffer,
+        text: isText ? buffer.toString('utf-8') : null
+      };
+    } catch (error) {
+      console.error('Error reading file:', error);
+      throw error;
+    }
+  });
+
+  // Add to existing IPC handlers
+  ipcMain.handle('extract-text', async (_event, { data, type }) => {
+    try {
+      const buffer = Buffer.from(data);
+      
+      if (type === '.docx') {
+        const result = await mammoth.extractRawText({ buffer });
+        return { text: result.value };
+      }
+      
+      // Add handlers for other document types as needed
+      return { text: null };
+    } catch (error) {
+      console.error('Error extracting text:', error);
       throw error;
     }
   });

@@ -15,5 +15,11 @@ contextBridge.exposeInMainWorld('electron', {
   },
   getApiKey: async () => {
     return await ipcRenderer.invoke('get-api-key');
+  },
+  readFile: async (filePath: string) => {
+    return await ipcRenderer.invoke('read-file', filePath);
+  },
+  extractText: async (data: { data: number[], type: string }) => {
+    return await ipcRenderer.invoke('extract-text', data);
   }
 }); 
