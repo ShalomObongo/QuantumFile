@@ -22,18 +22,32 @@ export class GeminiService {
     this.model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
   }
 
-  async analyzeFiles(files: FileDetails[]): Promise<FileChange[]> {
+  async *analyzeFilesStream(files: FileDetails[]): AsyncGenerator<FileChange> {
     const prompt = this.buildPrompt(files);
     
     try {
       const result = await this.model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
-      return this.parseResponse(text, files);
+      const changes = await this.parseResponse(text, files);
+      
+      // Simulate streaming for now since Gemini doesn't support true streaming yet
+      for (const change of changes) {
+        await new Promise(resolve => setTimeout(resolve, 100)); // Add small delay
+        yield change;
+      }
     } catch (error) {
       console.error('Error analyzing files with Gemini:', error);
       throw error;
     }
+  }
+
+  async analyzeFiles(files: FileDetails[]): Promise<FileChange[]> {
+    const changes: FileChange[] = [];
+    for await (const change of this.analyzeFilesStream(files)) {
+      changes.push(change);
+    }
+    return changes;
   }
 
   private buildPrompt(files: FileDetails[]): string {

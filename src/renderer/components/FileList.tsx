@@ -7,6 +7,7 @@ import {
   Alert,
   CircularProgress,
   Box,
+  LinearProgress,
 } from '@mui/material';
 import { Folder as FolderIcon } from '@mui/icons-material';
 
@@ -39,9 +40,10 @@ interface FileListProps {
   apiKey: string;
   onFolderSelect: (contents: FolderContents) => void;
   processing: boolean;
+  progress: number;
 }
 
-const FileList: React.FC<FileListProps> = ({ apiKey, onFolderSelect, processing }) => {
+const FileList: React.FC<FileListProps> = ({ apiKey, onFolderSelect, processing, progress }) => {
   const handleClick = async () => {
     try {
       const result = await window.electron.selectFolder();
@@ -90,6 +92,22 @@ const FileList: React.FC<FileListProps> = ({ apiKey, onFolderSelect, processing 
           <Alert severity="warning" sx={{ mt: 2 }}>
             Please add your Gemini API key in settings first
           </Alert>
+        )}
+        {processing && (
+          <Box sx={{ mt: 3, width: '100%' }}>
+            <LinearProgress 
+              variant="determinate" 
+              value={progress} 
+              sx={{ 
+                height: 8,
+                borderRadius: 4,
+                mb: 1
+              }}
+            />
+            <Typography variant="body2" color="text.secondary">
+              Analyzing files: {Math.round(progress)}%
+            </Typography>
+          </Box>
         )}
       </Paper>
     </Container>

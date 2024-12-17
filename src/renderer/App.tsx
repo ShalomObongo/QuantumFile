@@ -65,17 +65,27 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(true);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [processingProgress, setProcessingProgress] = useState(0);
 
   const handleFolderSelect = async (contents: { folderPath: string; files: FileDetails[] }) => {
     setProcessing(true);
     setSelectedFolder(contents.folderPath);
     setFolderContents(contents.files);
     setError(null);
+    setProposedChanges([]);
+    setProcessingProgress(0);
 
     try {
       const gemini = new GeminiService(apiKey);
-      const changes = await gemini.analyzeFiles(contents.files);
-      setProposedChanges(changes);
+      const totalFiles = contents.files.length;
+      let processedFiles = 0;
+
+      for await (const change of gemini.analyzeFilesStream(contents.files)) {
+        processedFiles++;
+        setProcessingProgress((processedFiles / totalFiles) * 100);
+        setProposedChanges(prev => [...prev, change]);
+      }
+
       setProcessing(false);
       setView('preview');
     } catch (error) {
@@ -104,6 +114,7 @@ const App: React.FC = () => {
             apiKey={apiKey}
             onFolderSelect={handleFolderSelect}
             processing={processing}
+            progress={processingProgress}
           />
         );
 

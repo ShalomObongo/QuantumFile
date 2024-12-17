@@ -85,31 +85,39 @@ const PreviewChanges: React.FC<PreviewChangesProps> = ({ changes, onCancel, onAp
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h5" gutterBottom>
-        Proposed Changes
+        Proposed Changes {changes.length > 0 && `(${changes.length} files)`}
       </Typography>
       <Grid container spacing={2}>
-        {changes.map((change, index) => {
-          const originalDir = getDirectoryPath(change.originalPath);
-          const newFullPath = joinPaths(originalDir, change.newPath);
-          
-          return (
-            <Grid item xs={12} key={index}>
-              <Card>
-                <CardContent>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Original: {change.originalPath}
-                  </Typography>
-                  <Typography variant="subtitle2" color="primary">
-                    New: {newFullPath}
-                  </Typography>
-                  <Typography variant="body2" sx={{ mt: 1 }}>
-                    Reason: {change.reason}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          );
-        })}
+        {changes.map((change, index) => (
+          <Grid 
+            item 
+            xs={12} 
+            key={index}
+            sx={{
+              opacity: 0,
+              animation: 'fadeIn 0.3s ease forwards',
+              animationDelay: `${index * 0.1}s`,
+              '@keyframes fadeIn': {
+                from: { opacity: 0, transform: 'translateY(10px)' },
+                to: { opacity: 1, transform: 'translateY(0)' }
+              }
+            }}
+          >
+            <Card>
+              <CardContent>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Original: {change.originalPath}
+                </Typography>
+                <Typography variant="subtitle2" color="primary">
+                  New: {joinPaths(getDirectoryPath(change.originalPath), change.newPath)}
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  Reason: {change.reason}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
       <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
         <Button 
